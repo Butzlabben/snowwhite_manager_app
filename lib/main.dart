@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:snowwhite_manager/add_ticket.dart';
+import 'package:snowwhite_manager/button.dart';
+import 'package:snowwhite_manager/home.dart';
 import 'package:snowwhite_manager/scan_ticket.dart';
 import 'package:snowwhite_manager/verify.dart';
 
@@ -11,11 +15,10 @@ class SnowwhiteManager extends StatelessWidget {
     return MaterialApp(
       title: 'Snowwhite Manager',
       theme: ThemeData(
-        primarySwatch: Colors.red,
-
+        primaryColor: Colors.lightBlue,
       ),
       routes: {
-        '/': (context) => HomeScreen(),
+        '/': (context) => MainScreen(),
         '/addTicket': (context) => AddTicket(),
         '/scanTicket': (context) => ScanTicket(),
         '/verify': (context) => VerifyPin(),
@@ -24,29 +27,71 @@ class SnowwhiteManager extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenState extends State<MainScreen> {
+  bool _loggedIn;
+  final key = GlobalKey<FormState>();
+  String name, pin;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Snowwhite Manager'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.camera_alt),
-            onPressed: () => Navigator.pushNamed(context, '/scanTicket'),
+    checkUser();
+    if (_loggedIn == null) return Container();
+
+    if (_loggedIn) {
+      return HomeScreen();
+    } else {
+      return Form(
+        key: key,
+        child: new Scaffold(
+          appBar: AppBar(title: Text('Einloggen')),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextFormField(
+                    validator: (val) =>
+                        val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
+                    onSaved: (val) => name = val,
+                    decoration: InputDecoration(labelText: 'Nachname'),
+                  ),
+                  TextFormField(
+                    validator: (val) =>
+                        val.isEmpty ? 'Bitte gebe deine PIN an' : null,
+                    onSaved: (val) => pin = val,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'PIN'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  Center(
+                      child: Button.text(
+                    text: "Einloggen",
+                    onTap: logIn,
+                  )),
+                ],
+              ),
+            ),
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.pushNamed(context, '/addTicket'),
-      ),
-      body: StreamBuilder(),
-    );
+        ),
+      );
+    }
+  }
+
+  logIn() async {
+
+  }
+
+  checkUser() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String token = await storage.read(key: 'token');
+    setState(() {
+      _loggedIn = token != null;
+    });
   }
 }
