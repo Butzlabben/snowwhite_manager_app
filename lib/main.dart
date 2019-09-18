@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:snowwhite_manager/add_ticket.dart';
+import 'package:snowwhite_manager/screens/add_ticket.dart';
+import 'package:snowwhite_manager/api.dart';
 import 'package:snowwhite_manager/button.dart';
-import 'package:snowwhite_manager/home.dart';
-import 'package:snowwhite_manager/scan_ticket.dart';
-import 'package:snowwhite_manager/verify.dart';
+import 'package:snowwhite_manager/screens/home.dart';
+import 'package:snowwhite_manager/screens/scan_ticket.dart';
+import 'package:snowwhite_manager/screens/verify.dart';
 
 void main() => runApp(SnowwhiteManager());
 
@@ -35,7 +36,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   bool _loggedIn;
   final key = GlobalKey<FormState>();
-  String name, pin;
+  String name, pin, message;
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +56,21 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  if (message != null)
+                    Text(
+                      message,
+                      style: TextStyle(color: Colors.red.shade900, fontSize: 24),
+                      textAlign: TextAlign.center,
+                    ),
                   TextFormField(
                     validator: (val) =>
-                        val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
+                    val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
                     onSaved: (val) => name = val,
                     decoration: InputDecoration(labelText: 'Nachname'),
                   ),
                   TextFormField(
                     validator: (val) =>
-                        val.isEmpty ? 'Bitte gebe deine PIN an' : null,
+                    val.isEmpty ? 'Bitte gebe deine PIN an' : null,
                     onSaved: (val) => pin = val,
                     obscureText: true,
                     decoration: InputDecoration(labelText: 'PIN'),
@@ -71,9 +78,9 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Center(
                       child: Button.text(
-                    text: "Einloggen",
-                    onTap: logIn,
-                  )),
+                        text: "Einloggen",
+                        onTap: onTap,
+                      )),
                 ],
               ),
             ),
@@ -83,15 +90,31 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  logIn() async {
+  onTap() async {
+    final state = key.currentState;
+    if (!state.validate()) {
+      return;
+    }
+    state.save();
 
+    Future<String> token = logIn(name, pin);
+    token.then((val) async {
+      FlutterSecureStorage storage = FlutterSecureStorage();
+      storage.write(key: 'token', value: val);
+      checkUser();
+    }).catchError((_) {
+      setState(() {
+        message = "Falscher Benutzer oder falsche PIN";
+      });
+    });
   }
 
   checkUser() async {
     FlutterSecureStorage storage = FlutterSecureStorage();
     String token = await storage.read(key: 'token');
-    setState(() {
-      _loggedIn = token != null;
-    });
+    if (_loggedIn != (token != null))
+      setState(() {
+        _loggedIn = token != null;
+      });
   }
 }

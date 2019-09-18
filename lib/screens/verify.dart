@@ -34,15 +34,19 @@ class _VerifyPinState extends State<VerifyPin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: TextField(
-          obscureText: true,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: 'PIN',
-            border: OutlineInputBorder(borderSide: BorderSide()),
+      appBar: AppBar(title: Text("PIN eingeben")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: TextField(
+            obscureText: true,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'PIN',
+              border: OutlineInputBorder(borderSide: BorderSide()),
+            ),
+            controller: _controller,
           ),
-          controller: _controller,
         ),
       ),
     );
@@ -57,7 +61,7 @@ class _VerifyPinState extends State<VerifyPin> {
         falsePin = true;
       });
     } else {
-      Navigator.pop(context, {});
+      Navigator.pop(context, {'pin': pin});
     }
   }
 }
