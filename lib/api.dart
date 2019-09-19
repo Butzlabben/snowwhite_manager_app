@@ -29,7 +29,7 @@ Future<Scan> checkTicket(String tid) async {
   Future<Scan> result = Future.error("error");
   Map body = {'token': token, "tid": tid};
   http.Response response =
-  await http.post(prefix + "check_ticket.php", body: jsonEncode(body));
+      await http.post(prefix + "check_ticket.php", body: jsonEncode(body));
 
   if (response.statusCode == 404) {
     result = Future.value(Scan(ScanResult.not_found));
@@ -54,8 +54,8 @@ Future<String> logIn(String name, String pin) async {
   return token;
 }
 
-Future<bool> addTicket(String name, String pin, String number,
-    int amount) async {
+Future<bool> addTicket(
+    String name, String pin, String number, int amount) async {
   String token = await FlutterSecureStorage().read(key: 'token');
   String url = prefix + "add_ticket.php";
   Map body = {
@@ -74,6 +74,16 @@ Future<bool> addTicket(String name, String pin, String number,
   }
 }
 
+Future<List<Ticket>> listTickets({int limit: 20, int offset: 0}) async {
+  String token = await FlutterSecureStorage().read(key: 'token');
+  http.Response response = await http.get(
+      prefix + "list_tickets.php?token=$token&limit=$limit&offset=$offset");
+          List list = jsonDecode(response.body);
+  List<Ticket> tickets = list.map((ticket) => Ticket.fromJson(ticket)).toList();
+
+  return tickets;
+}
+
 class Scan {
   final ScanResult result;
 
@@ -84,6 +94,17 @@ class Scan {
   String get message => resultMessages[result];
 
   IconData get icon => resultIcons[result];
+}
+
+class Ticket {
+  final String name, number;
+  final DateTime created;
+
+  Ticket(this.name, this.number, this.created);
+
+  Ticket.fromJson(Map<String, dynamic> map)
+      : this(map['buyer'], map['number'],
+            DateTime.fromMillisecondsSinceEpoch(int.parse(map['created']) * 1000));
 }
 
 enum ScanResult { allowed, already_used, not_found, error }

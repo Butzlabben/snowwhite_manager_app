@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
-  Widget body = Container();
+  Widget body = TicketList();
 
   @override
   Widget build(BuildContext context) {
