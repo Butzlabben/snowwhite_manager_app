@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:snowwhite_manager/screens/add_ticket.dart';
 import 'package:snowwhite_manager/api.dart';
 import 'package:snowwhite_manager/button.dart';
+import 'package:snowwhite_manager/screens/add_ticket.dart';
 import 'package:snowwhite_manager/screens/home.dart';
 import 'package:snowwhite_manager/screens/scan_ticket.dart';
 import 'package:snowwhite_manager/screens/verify.dart';
@@ -22,7 +22,15 @@ class SnowwhiteManager extends StatelessWidget {
         '/': (context) => MainScreen(),
         '/addTicket': (context) => AddTicket(),
         '/scanTicket': (context) => ScanTicket(),
-        '/verify': (context) => VerifyPin(),
+      },
+      onGenerateRoute: (settings) {
+        String name = settings.name;
+        if (name == "/verify")
+          return MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => VerifyPin(),
+          );
+        return null;
       },
     );
   }
@@ -59,18 +67,19 @@ class _MainScreenState extends State<MainScreen> {
                   if (message != null)
                     Text(
                       message,
-                      style: TextStyle(color: Colors.red.shade900, fontSize: 24),
+                      style:
+                          TextStyle(color: Colors.red.shade900, fontSize: 24),
                       textAlign: TextAlign.center,
                     ),
                   TextFormField(
                     validator: (val) =>
-                    val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
+                        val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
                     onSaved: (val) => name = val,
                     decoration: InputDecoration(labelText: 'Nachname'),
                   ),
                   TextFormField(
                     validator: (val) =>
-                    val.isEmpty ? 'Bitte gebe deine PIN an' : null,
+                        val.isEmpty ? 'Bitte gebe deine PIN an' : null,
                     onSaved: (val) => pin = val,
                     obscureText: true,
                     decoration: InputDecoration(labelText: 'PIN'),
@@ -78,9 +87,9 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Center(
                       child: Button.text(
-                        text: "Einloggen",
-                        onTap: onTap,
-                      )),
+                    text: "Einloggen",
+                    onTap: onTap,
+                  )),
                 ],
               ),
             ),

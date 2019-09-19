@@ -82,12 +82,14 @@ class Scan {
   Color get color => resultColors[result];
 
   String get message => resultMessages[result];
+
+  IconData get icon => resultIcons[result];
 }
 
 enum ScanResult { allowed, already_used, not_found, error }
 
 Map<ScanResult, Color> resultColors = {
-  ScanResult.allowed: Colors.lightGreen,
+  ScanResult.allowed: Colors.green,
   ScanResult.already_used: Colors.red,
   ScanResult.not_found: Colors.red,
   ScanResult.error: Colors.yellow.shade700
@@ -98,4 +100,11 @@ Map<ScanResult, String> resultMessages = {
   ScanResult.already_used: 'Ticket bereits benutzt',
   ScanResult.not_found: 'Ticket wurde nicht gefunden',
   ScanResult.error: 'Fehler'
+};
+
+Map<ScanResult, IconData> resultIcons = {
+  ScanResult.allowed: Icons.check_circle,
+  ScanResult.already_used: Icons.close,
+  ScanResult.not_found: Icons.close,
+  ScanResult.error: Icons.error
 };

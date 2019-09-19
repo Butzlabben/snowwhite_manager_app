@@ -27,14 +27,17 @@ class _VerifyPinState extends State<VerifyPin> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("PIN eingeben")),
+      appBar: AppBar(
+        title: Text("PIN eingeben", style: TextStyle(color: Colors.white)),
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Center(
@@ -46,6 +49,7 @@ class _VerifyPinState extends State<VerifyPin> {
               border: OutlineInputBorder(borderSide: BorderSide()),
             ),
             controller: _controller,
+            autofocus: true,
           ),
         ),
       ),

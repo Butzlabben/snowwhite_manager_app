@@ -69,8 +69,40 @@ class _AddTicketState extends State<AddTicket> {
     var res = await Navigator.pushNamed(context, '/verify');
     Map result = res;
     if (result.containsKey('pin')) {
-      await prefix0.addTicket(name, result['pin'], number, amount);
-      Navigator.pop(context);
+      bool success =
+          await prefix0.addTicket(name, result['pin'], number, amount);
+
+      showResultDialog(success);
+
+      if (success)
+        Future.delayed(Duration(seconds: 5)).then(
+            (_) => Navigator.of(context).popUntil(ModalRoute.withName('/')));
+      else
+        Future.delayed(Duration(seconds:5))
+            .then((_) => Navigator.pop(context));
     }
+  }
+
+  showResultDialog(bool success) {
+    IconData icon = success ? Icons.check_circle : Icons.close;
+    Color color = success ? Colors.green : Colors.red;
+    String text = success ? "Ticket erstellt" : "Konnte Ticket nicht erstellen";
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Column(
+          children: <Widget>[
+            Icon(
+              icon,
+              color: color,
+              size: 42,
+            ),
+            Text(text)
+          ],
+        ),
+      ),
+    );
   }
 }
