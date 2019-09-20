@@ -8,6 +8,7 @@ class TicketList extends StatefulWidget {
 
 class _TicketListState extends State<TicketList> {
   List<Ticket> tickets = [];
+  bool reachedEnd = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class _TicketListState extends State<TicketList> {
           }
           return TicketWidget(ticket: tickets[i]);
         },
-        itemCount: tickets.length + 1,
+        itemCount: tickets.isNotEmpty ? tickets.length + 1 : 0,
         cacheExtent: 500,
       ),
     );
@@ -36,15 +37,18 @@ class _TicketListState extends State<TicketList> {
     if (this.tickets.length != 0) return;
     List<Ticket> tickets = await listTickets();
     setState(() {
-      this.tickets.addAll(tickets);
+      this.tickets = tickets;
+      reachedEnd = false;
     });
   }
 
   tryFetchNext() async {
-    print(this.tickets.length);
+    if (reachedEnd) return;
     List<Ticket> tickets = await listTickets(offset: this.tickets.length);
-    print(tickets.length);
-    if (tickets.length == 0) return;
+    if (tickets.length == 0) {
+      reachedEnd = true;
+      return;
+    }
     setState(() {
       this.tickets.addAll(tickets);
     });

@@ -139,6 +139,7 @@ class ResultWidget extends StatelessWidget {
         Text(
           result.message,
           style: TextStyle(color: result.color, fontSize: 32),
+          textAlign: TextAlign.center,
         ),
         Button.text(
           text: "Weiter Scannen",
