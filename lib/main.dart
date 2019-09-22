@@ -79,11 +79,10 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   TextFormField(
                     validator: (val) =>
-                        val.isEmpty ? 'Bitte gebe deine PIN an' : null,
+                        val.isEmpty ? 'Bitte gebe dein Passwort an' : null,
                     onSaved: (val) => pin = val,
                     obscureText: true,
-                    decoration: InputDecoration(labelText: 'PIN'),
-                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: 'Passwort'),
                   ),
                   Center(
                       child: Button.text(
@@ -109,11 +108,11 @@ class _MainScreenState extends State<MainScreen> {
     Future<String> token = logIn(name, pin);
     token.then((val) async {
       FlutterSecureStorage storage = FlutterSecureStorage();
-      storage.write(key: 'token', value: val);
+      await storage.write(key: 'token', value: val);
       checkUser();
     }).catchError((_) {
       setState(() {
-        message = "Falscher Benutzer oder falsche PIN";
+        message = "Falscher Benutzer oder falsches Passwort";
       });
     });
   }
@@ -121,6 +120,13 @@ class _MainScreenState extends State<MainScreen> {
   checkUser() async {
     FlutterSecureStorage storage = FlutterSecureStorage();
     String token = await storage.read(key: 'token');
+    if (token != null) {
+      bool res = await verifyToken(token);
+      if (!res) {
+        await storage.delete(key: 'token');
+        token = null;
+      }
+    }
     if (_loggedIn != (token != null))
       setState(() {
         _loggedIn = token != null;

@@ -24,12 +24,23 @@ Future<bool> verify(String pin) async {
   return verifyWithUsername(token, pin);
 }
 
+Future<bool> verifyToken(String token) async {
+  Map body = {'token': token};
+  http.Response response = await http.post(prefix + "verify_token.php", body: jsonEncode(body));
+  if (response.statusCode == 400) {
+    return Future.error("error");
+  } else if (response.statusCode == 200) {
+    return true;
+  }
+  return false;
+}
+
 Future<Scan> checkTicket(String tid) async {
   String token = await FlutterSecureStorage().read(key: 'token');
   Future<Scan> result = Future.error("error");
   Map body = {'token': token, "tid": tid};
   http.Response response =
-      await http.post(prefix + "check_ticket.php", body: jsonEncode(body));
+      await http.post(prefix + "tickets/check.php", body: jsonEncode(body));
 
   if (response.statusCode == 404) {
     result = Future.value(Scan(ScanResult.not_found));
@@ -41,10 +52,10 @@ Future<Scan> checkTicket(String tid) async {
   return result;
 }
 
-Future<String> logIn(String name, String pin) async {
+Future<String> logIn(String name, String password) async {
   Future<String> token;
   String url = prefix + "login.php";
-  Map body = {'name': name, 'pin': pin};
+  Map body = {'name': name, 'password': password};
   http.Response response = await http.post(url, body: jsonEncode(body));
   if (response.statusCode != 200) {
     token = Future.error("error");
@@ -57,7 +68,7 @@ Future<String> logIn(String name, String pin) async {
 Future<bool> addTicket(
     String name, String pin, String number, int amount) async {
   String token = await FlutterSecureStorage().read(key: 'token');
-  String url = prefix + "add_ticket.php";
+  String url = prefix + "tickets/add.php";
   Map body = {
     'name': name,
     'pin': pin,
@@ -77,7 +88,7 @@ Future<bool> addTicket(
 Future<List<Ticket>> listTickets({int limit: 20, int offset: 0}) async {
   String token = await FlutterSecureStorage().read(key: 'token');
   http.Response response = await http.get(
-      prefix + "list_tickets.php?token=$token&limit=$limit&offset=$offset");
+      prefix + "tickets/list.php?token=$token&limit=$limit&offset=$offset");
           List list = jsonDecode(response.body);
   List<Ticket> tickets = list.map((ticket) => Ticket.fromJson(ticket)).toList();
 
