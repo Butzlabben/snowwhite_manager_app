@@ -19,7 +19,8 @@ class _AddTicketState extends State<AddTicket> {
       child: Scaffold(
         appBar: AppBar(
           title:
-              Text('Ticket hinzufügen', style: TextStyle(color: Colors.white)),
+              Text('Ticket hinzufügen', style: TextStyle(color: Colors.white)),        centerTitle: true,
+
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -85,7 +86,7 @@ class _AddTicketState extends State<AddTicket> {
 
   showResultDialog(bool success) {
     IconData icon = success ? Icons.check_circle : Icons.close;
-    Color color = success ? Colors.green : Colors.red;
+    Color color = success ? Color(0xFF2CD02C) : Color(0xffff0000);
     String text = success ? "Ticket erstellt" : "Konnte Ticket nicht erstellen";
 
     showDialog(

@@ -16,11 +16,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Snowwhite Manager', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.list), title: Text("Tickets")),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), title: Text("Scannen")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list), title: Text("Tickets")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.camera_alt), title: Text("Scannen")),
         ],
         currentIndex: _index,
         onTap: onNavigate,
@@ -29,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ? FloatingActionButton(
               child: Icon(Icons.add),
               onPressed: () => Navigator.pushNamed(context, '/addTicket'),
+              backgroundColor: Theme.of(context).primaryColor,
             )
           : Container(),
       body: body,
@@ -38,10 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   onNavigate(int index) {
     setState(() {
       _index = index;
-      if(_index == 0)
-        body = TicketList();
-      if(_index == 1)
-        body = ScanTicket();
+      if (_index == 0) body = TicketList();
+      if (_index == 1) body = ScanTicket();
     });
   }
 }

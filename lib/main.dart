@@ -16,8 +16,7 @@ class SnowwhiteManager extends StatelessWidget {
     return MaterialApp(
       title: 'Snowwhite Manager',
       theme: ThemeData(
-        primaryColor: Colors.lightBlue,
-      ),
+          primaryColor: Color.fromRGBO(55, 0, 255, 1), fontFamily: 'Segoe UI'),
       routes: {
         '/': (context) => MainScreen(),
         '/addTicket': (context) => AddTicket(),
@@ -57,7 +56,13 @@ class _MainScreenState extends State<MainScreen> {
       return Form(
         key: key,
         child: new Scaffold(
-          appBar: AppBar(title: Text('Einloggen')),
+          appBar: AppBar(
+            title: Text(
+              'Einloggen',
+              style: TextStyle(color: Colors.white),
+            ),
+            centerTitle: true,
+          ),
           body: Center(
             child: Padding(
               padding: const EdgeInsets.all(16),

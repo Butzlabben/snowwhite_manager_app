@@ -80,6 +80,7 @@ class _InputWidgetState extends State<InputWidget> {
                 child: FloatingActionButton(
                   onPressed: () => controller.toggleFlash(),
                   child: Icon(Icons.flash_on),
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
               )
             ],
@@ -135,10 +136,12 @@ class ResultWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Icon(result.icon, size: 58, color: result.color),
-        SizedBox(height: 16,),
+        SizedBox(
+          height: 16,
+        ),
         Text(
           result.message,
-          style: TextStyle(color: result.color, fontSize: 32),
+          style: TextStyle(color: result.color, fontSize: 32, fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
         Button.text(

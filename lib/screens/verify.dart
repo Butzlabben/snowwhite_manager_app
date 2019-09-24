@@ -37,6 +37,7 @@ class _VerifyPinState extends State<VerifyPin> {
       appBar: AppBar(
         title: Text("PIN eingeben", style: TextStyle(color: Colors.white)),
         automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

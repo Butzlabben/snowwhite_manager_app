@@ -37,7 +37,7 @@ Future<bool> verifyToken(String token) async {
 
 Future<Scan> checkTicket(String tid) async {
   String token = await FlutterSecureStorage().read(key: 'token');
-  Future<Scan> result = Future.error("error");
+  Future<Scan> result = Future.error(Scan(ScanResult.error));
   Map body = {'token': token, "tid": tid};
   http.Response response =
       await http.post(prefix + "tickets/check.php", body: jsonEncode(body));
@@ -121,10 +121,10 @@ class Ticket {
 enum ScanResult { allowed, already_used, not_found, error }
 
 Map<ScanResult, Color> resultColors = {
-  ScanResult.allowed: Colors.green,
-  ScanResult.already_used: Colors.red,
-  ScanResult.not_found: Colors.red,
-  ScanResult.error: Colors.yellow.shade700
+  ScanResult.allowed: Color(0xFF2CD02C),
+  ScanResult.already_used: Color(0xffff0000),
+  ScanResult.not_found: Color(0xffff0000),
+  ScanResult.error: Color(0xFFFFD200)
 };
 
 Map<ScanResult, String> resultMessages = {

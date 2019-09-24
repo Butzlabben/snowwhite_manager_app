@@ -36,10 +36,11 @@ class _TicketListState extends State<TicketList> {
   fetchFirst() async {
     if (this.tickets.length != 0) return;
     List<Ticket> tickets = await listTickets();
-    setState(() {
-      this.tickets = tickets;
-      reachedEnd = false;
-    });
+    if (mounted)
+      setState(() {
+        this.tickets = tickets;
+        reachedEnd = false;
+      });
   }
 
   tryFetchNext() async {
@@ -49,9 +50,10 @@ class _TicketListState extends State<TicketList> {
       reachedEnd = true;
       return;
     }
-    setState(() {
-      this.tickets.addAll(tickets);
-    });
+    if (mounted)
+      setState(() {
+        this.tickets.addAll(tickets);
+      });
   }
 }
 
