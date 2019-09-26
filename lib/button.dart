@@ -38,7 +38,7 @@ class _ButtonState extends State<Button> {
           },
           onTapUp: (_) {
             setState(() {
-              scale = 0.8;
+              scale = 1;
             });
             widget.onTap();
           },

@@ -36,6 +36,7 @@ class _ScanTicketState extends State<ScanTicket> {
   }
 
   fetch(String tid) {
+    if(tid == null) return;
     Future<Scan> result = checkTicket(tid);
     result.then((val) {
       setState(() {
