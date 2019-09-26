@@ -109,6 +109,9 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
     state.save();
+    setState(() {
+      message = null;
+    });
 
     Future<String> token = logIn(name, pin);
     token.then((val) async {

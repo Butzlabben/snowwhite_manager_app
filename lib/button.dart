@@ -22,18 +22,38 @@ class Button extends StatefulWidget {
 }
 
 class _ButtonState extends State<Button> {
+  double scale = 1;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          height: 64,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(32)),
-              color: Theme.of(context).primaryColor),
-          child: Center(child: widget.child),
+      child: Transform.scale(
+        scale: scale,
+        child: GestureDetector(
+          onTapDown: (_) {
+            setState(() {
+              scale = 0.8;
+            });
+          },
+          onTapUp: (_) {
+            setState(() {
+              scale = 0.8;
+            });
+            widget.onTap();
+          },
+          onTapCancel: () {
+            setState(() {
+              scale = 1;
+            });
+          },
+          child: Container(
+            height: 64,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(32)),
+                color: Theme.of(context).primaryColor),
+            child: Center(child: widget.child),
+          ),
         ),
       ),
     );
