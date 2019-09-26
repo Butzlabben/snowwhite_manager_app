@@ -41,10 +41,6 @@ class _ScanTicketState extends State<ScanTicket> {
       setState(() {
         this.result = val;
       });
-    }).catchError((_) {
-      setState(() {
-        this.result = Scan(ScanResult.error);
-      });
     });
   }
 }
