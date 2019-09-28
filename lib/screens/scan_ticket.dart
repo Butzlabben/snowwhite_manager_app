@@ -13,6 +13,7 @@ class ScanTicket extends StatefulWidget {
 
 class _ScanTicketState extends State<ScanTicket> {
   Scan result;
+  String tid;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,12 @@ class _ScanTicketState extends State<ScanTicket> {
             )
           : ResultWidget(
               result: result,
+              tid: tid,
               exit: () {
                 setState(
                   () {
                     result = null;
+                    tid = null;
                   },
                 );
               },
@@ -36,10 +39,11 @@ class _ScanTicketState extends State<ScanTicket> {
   }
 
   fetch(String tid) {
-    if(tid == null) return;
+    if (tid == null) return;
     Future<Scan> result = checkTicket(tid);
     result.then((val) {
       setState(() {
+        this.tid = tid;
         this.result = val;
       });
     });
@@ -86,7 +90,7 @@ class _InputWidgetState extends State<InputWidget> {
         SizedBox(height: 16),
         TextField(
             controller: textController,
-            decoration: InputDecoration(labelText: 'Ticket ID')),
+            decoration: InputDecoration(labelText: 'Ticket-ID')),
         Button.text(
           text: 'Manuell eingeben',
           onTap: () {
@@ -122,9 +126,11 @@ class _InputWidgetState extends State<InputWidget> {
 
 class ResultWidget extends StatelessWidget {
   final Scan result;
+  final String tid;
   final VoidCallback exit;
 
-  const ResultWidget({Key key, this.result, this.exit}) : super(key: key);
+  const ResultWidget({Key key, this.result, this.exit, this.tid})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -132,13 +138,17 @@ class ResultWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Icon(result.icon, size: 58, color: result.color),
-        SizedBox(
-          height: 16,
+        Text(
+          "Ticket-ID: $tid",
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+          textAlign: TextAlign.center,
         ),
+        SizedBox(height: 16),
+        Icon(result.icon, size: 58, color: result.color),
         Text(
           result.message,
-          style: TextStyle(color: result.color, fontSize: 32, fontWeight: FontWeight.w700),
+          style: TextStyle(
+              color: result.color, fontSize: 32, fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
         Button.text(
