@@ -26,7 +26,8 @@ Future<bool> verify(String pin) async {
 
 Future<bool> verifyToken(String token) async {
   Map body = {'token': token};
-  http.Response response = await http.post(prefix + "verify_token.php", body: jsonEncode(body));
+  http.Response response =
+      await http.post(prefix + "verify_token.php", body: jsonEncode(body));
   if (response.statusCode == 400) {
     return Future.error("error");
   } else if (response.statusCode == 200) {
@@ -89,7 +90,7 @@ Future<List<Ticket>> listTickets({int limit: 20, int offset: 0}) async {
   String token = await FlutterSecureStorage().read(key: 'token');
   http.Response response = await http.get(
       prefix + "tickets/list.php?token=$token&limit=$limit&offset=$offset");
-          List list = jsonDecode(response.body);
+  List list = jsonDecode(response.body);
   List<Ticket> tickets = list.map((ticket) => Ticket.fromJson(ticket)).toList();
 
   return tickets;
@@ -119,12 +120,17 @@ class Scan {
 class Ticket {
   final String name, number;
   final DateTime created;
+  final bool used;
 
-  Ticket(this.name, this.number, this.created);
+  Ticket(this.name, this.number, this.created, this.used);
 
   Ticket.fromJson(Map<String, dynamic> map)
-      : this(map['buyer'], map['number'],
-            DateTime.fromMillisecondsSinceEpoch(int.parse(map['created']) * 1000));
+      : this(
+          map['buyer'],
+          map['number'],
+          DateTime.fromMillisecondsSinceEpoch(int.parse(map['created']) * 1000),
+          int.parse(map['used']) == 0 ? false : true,
+        );
 }
 
 enum ScanResult { allowed, already_used, not_found, error }

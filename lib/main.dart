@@ -64,37 +64,39 @@ class _MainScreenState extends State<MainScreen> {
             centerTitle: true,
           ),
           body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  if (message != null)
-                    Text(
-                      message,
-                      style:
-                          TextStyle(color: Colors.red.shade900, fontSize: 24),
-                      textAlign: TextAlign.center,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (message != null)
+                      Text(
+                        message,
+                        style:
+                            TextStyle(color: Colors.red.shade900, fontSize: 24),
+                        textAlign: TextAlign.center,
+                      ),
+                    TextFormField(
+                      validator: (val) =>
+                          val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
+                      onSaved: (val) => name = val,
+                      decoration: InputDecoration(labelText: 'Nachname'),
                     ),
-                  TextFormField(
-                    validator: (val) =>
-                        val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
-                    onSaved: (val) => name = val,
-                    decoration: InputDecoration(labelText: 'Nachname'),
-                  ),
-                  TextFormField(
-                    validator: (val) =>
-                        val.isEmpty ? 'Bitte gebe dein Passwort an' : null,
-                    onSaved: (val) => pin = val,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: 'Passwort'),
-                  ),
-                  Center(
-                      child: Button.text(
-                    text: "Einloggen",
-                    onTap: onTap,
-                  )),
-                ],
+                    TextFormField(
+                      validator: (val) =>
+                          val.isEmpty ? 'Bitte gebe dein Passwort an' : null,
+                      onSaved: (val) => pin = val,
+                      obscureText: true,
+                      decoration: InputDecoration(labelText: 'Passwort'),
+                    ),
+                    Center(
+                        child: Button.text(
+                      text: "Einloggen",
+                      onTap: onTap,
+                    )),
+                  ],
+                ),
               ),
             ),
           ),

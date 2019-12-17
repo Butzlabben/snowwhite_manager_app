@@ -67,7 +67,10 @@ class TicketWidget extends StatelessWidget {
     String time = ticket.created.toString();
     time = time.substring(0, time.length - 7);
     return ListTile(
-        title: Text(ticket.name),
+        title: Text(
+          ticket.name,
+          style: ticket.used ? TextStyle(color: Color(0xFFFF0000), decoration: TextDecoration.lineThrough) : TextStyle(),
+        ),
         subtitle: Text(ticket.number),
         trailing: Text(time));
   }
