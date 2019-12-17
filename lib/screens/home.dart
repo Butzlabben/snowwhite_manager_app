@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snowwhite_manager/screens/dashboard.dart';
 import 'package:snowwhite_manager/screens/scan_ticket.dart';
 import 'package:snowwhite_manager/screens/ticket_list.dart';
 
@@ -10,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
   Widget body = TicketList();
+  bool _manager = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +23,18 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.list), title: Text("Tickets")),
+            icon: Icon(Icons.list),
+            title: Text("Tickets"),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.camera_alt), title: Text("Scannen")),
+            icon: Icon(Icons.camera_alt),
+            title: Text("Scannen"),
+          ),
+          if (_manager)
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text("Dashboard"),
+            ),
         ],
         currentIndex: _index,
         onTap: onNavigate,
@@ -44,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _index = index;
       if (_index == 0) body = TicketList();
       if (_index == 1) body = ScanTicket();
+      if (_index == 2) body = Dashboard();
     });
   }
 }

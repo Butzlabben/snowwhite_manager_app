@@ -100,8 +100,6 @@ class _InputWidgetState extends State<InputWidget> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      print("==================================================");
-      print(scanData);
       widget.scanCallback(scanData);
     });
   }

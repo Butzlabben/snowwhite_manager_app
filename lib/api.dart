@@ -95,6 +95,15 @@ Future<List<Ticket>> listTickets({int limit: 20, int offset: 0}) async {
   return tickets;
 }
 
+class DashboardInfo {
+  final int ticketsSold, ticketsUsed;
+  final Map<String, int> ticketsSoldByPerson;
+
+  DashboardInfo(this.ticketsSold, this.ticketsUsed, this.ticketsSoldByPerson);
+
+  double get ticketsUsedPercent => (ticketsUsed / ticketsSold) * 100;
+}
+
 class Scan {
   final ScanResult result;
 
