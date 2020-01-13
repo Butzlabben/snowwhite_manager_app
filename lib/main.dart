@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:snowwhite_manager/api.dart';
 import 'package:snowwhite_manager/button.dart';
 import 'package:snowwhite_manager/screens/add_ticket.dart';
+import 'package:snowwhite_manager/screens/home.dart';
 import 'package:snowwhite_manager/screens/scan_ticket.dart';
 import 'package:snowwhite_manager/screens/verify.dart';
 
@@ -15,7 +17,9 @@ class SnowwhiteManager extends StatelessWidget {
     return MaterialApp(
       title: 'Snowwhite Manager',
       theme: ThemeData(
-          primaryColor: Color.fromRGBO(55, 0, 255, 1), fontFamily: 'Segoe UI'),
+        primaryColor: Color.fromRGBO(55, 0, 255, 1),
+       // fontFamily: 'Segoe UI',
+      ),
       routes: {
         '/': (context) => MainScreen(),
         '/addTicket': (context) => AddTicket(),
@@ -53,11 +57,11 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    if (_loggedIn == null) return Container();
-//
-//    if (_loggedIn) {
-//      return Provider.value(child: HomeScreen(), value: _manager);
-//    } else {
+    if (_loggedIn == null) return Container();
+
+    if (_loggedIn) {
+      return HomeScreen(manager: _manager,);
+    } else {
     return Form(
       key: key,
       child: new Scaffold(
@@ -107,7 +111,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
-//    }
+    }
   }
 
   onTap() async {
@@ -133,16 +137,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   checkUser() async {
-    print('Test');
     FlutterSecureStorage storage = FlutterSecureStorage();
-    print('Test3');
     String token = await storage.read(key: 'token');
-    print('Test5 :$token');
 
     if (token != null) {
-      print('Test1');
       VerifyResult res = await verifyToken(token);
-      print('Test2');
       if (res == VerifyResult.not) {
         await storage.delete(key: 'token');
         token = null;

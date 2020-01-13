@@ -32,7 +32,7 @@ Future<VerifyResult> verifyToken(String token) async {
     return Future.error("error");
   } else if (response.statusCode == 200) {
     Map responseBody = jsonDecode(response.body);
-    return responseBody['manager'];
+    return responseBody['manager'] ? VerifyResult.manager : VerifyResult.normal;
   }
   return VerifyResult.not;
 }
@@ -104,18 +104,20 @@ Future<DashboardInfo> getInfo() async {
     throw Exception("User not able to see content");
   } else {
     Map body = jsonDecode(response.body);
-    List sellers_list = body['sellers'];
+    List sellerList = body['seller'];
     Map sellers = {};
-    sellers_list.forEach((seller) {
+    sellerList.forEach((seller) {
       sellers[seller['name']] = seller['ticket_count'];
     });
-    return DashboardInfo(body['ticket_count'], body['tickets_used'], sellers);
+    DashboardInfo info =
+        DashboardInfo(int.parse(body['ticket_count']), int.parse(body['tickets_used']), sellers);
+    return info;
   }
 }
 
 class DashboardInfo {
   final int ticketsSold, ticketsUsed;
-  final Map<String, int> ticketsSoldByPerson;
+  final Map ticketsSoldByPerson;
 
   DashboardInfo(this.ticketsSold, this.ticketsUsed, this.ticketsSoldByPerson);
 

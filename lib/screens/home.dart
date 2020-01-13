@@ -4,6 +4,10 @@ import 'package:snowwhite_manager/screens/scan_ticket.dart';
 import 'package:snowwhite_manager/screens/ticket_list.dart';
 
 class HomeScreen extends StatefulWidget {
+  final bool manager;
+
+  const HomeScreen({Key key, this.manager}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -11,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
   Widget body = TicketList();
-  bool _manager = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.camera_alt),
             title: Text("Scannen"),
           ),
-          if (_manager)
+          if (widget.manager)
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
               title: Text("Dashboard"),
