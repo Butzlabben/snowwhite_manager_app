@@ -4,7 +4,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:snowwhite_manager/api.dart';
 import 'package:snowwhite_manager/button.dart';
 import 'package:snowwhite_manager/screens/add_ticket.dart';
-import 'package:snowwhite_manager/screens/home.dart';
 import 'package:snowwhite_manager/screens/scan_ticket.dart';
 import 'package:snowwhite_manager/screens/verify.dart';
 
@@ -42,67 +41,73 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool _loggedIn;
+  bool _manager = false;
   final key = GlobalKey<FormState>();
   String name, pin, message;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     checkUser();
-    if (_loggedIn == null) return Container();
+    super.initState();
+  }
 
-    if (_loggedIn) {
-      return HomeScreen();
-    } else {
-      return Form(
-        key: key,
-        child: new Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Einloggen',
-              style: TextStyle(color: Colors.white),
-            ),
-            centerTitle: true,
+  @override
+  Widget build(BuildContext context) {
+//    if (_loggedIn == null) return Container();
+//
+//    if (_loggedIn) {
+//      return Provider.value(child: HomeScreen(), value: _manager);
+//    } else {
+    return Form(
+      key: key,
+      child: new Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Einloggen',
+            style: TextStyle(color: Colors.white),
           ),
-          body: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (message != null)
-                      Text(
-                        message,
-                        style:
-                            TextStyle(color: Colors.red.shade900, fontSize: 24),
-                        textAlign: TextAlign.center,
-                      ),
-                    TextFormField(
-                      validator: (val) =>
-                          val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
-                      onSaved: (val) => name = val,
-                      decoration: InputDecoration(labelText: 'Nachname'),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  if (message != null)
+                    Text(
+                      message,
+                      style:
+                          TextStyle(color: Colors.red.shade900, fontSize: 24),
+                      textAlign: TextAlign.center,
                     ),
-                    TextFormField(
-                      validator: (val) =>
-                          val.isEmpty ? 'Bitte gebe dein Passwort an' : null,
-                      onSaved: (val) => pin = val,
-                      obscureText: true,
-                      decoration: InputDecoration(labelText: 'Passwort'),
-                    ),
-                    Center(
-                        child: Button.text(
-                      text: "Einloggen",
-                      onTap: onTap,
-                    )),
-                  ],
-                ),
+                  TextFormField(
+                    validator: (val) =>
+                        val.isEmpty ? 'Bitte gebe deinen Nachnamen an' : null,
+                    onSaved: (val) => name = val,
+                    decoration: InputDecoration(labelText: 'Nachname'),
+                  ),
+                  TextFormField(
+                    validator: (val) =>
+                        val.isEmpty ? 'Bitte gebe dein Passwort an' : null,
+                    onSaved: (val) => pin = val,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Passwort'),
+                  ),
+                  Center(
+                      child: Button.text(
+                    text: "Einloggen",
+                    onTap: () => onTap(),
+                  )),
+                ],
               ),
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
+//    }
   }
 
   onTap() async {
@@ -128,14 +133,21 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   checkUser() async {
+    print('Test');
     FlutterSecureStorage storage = FlutterSecureStorage();
+    print('Test3');
     String token = await storage.read(key: 'token');
+    print('Test5 :$token');
+
     if (token != null) {
-      bool res = await verifyToken(token);
-      if (!res) {
+      print('Test1');
+      VerifyResult res = await verifyToken(token);
+      print('Test2');
+      if (res == VerifyResult.not) {
         await storage.delete(key: 'token');
         token = null;
       }
+      _manager = res == VerifyResult.manager;
     }
     if (_loggedIn != (token != null))
       setState(() {

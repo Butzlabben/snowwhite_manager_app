@@ -23,6 +23,7 @@ dependencies:
   http: any
   flutter_secure_storage: any
   qr_code_scanner: 0.0.12
+  provider:
 
   cupertino_icons: ^0.1.2
 

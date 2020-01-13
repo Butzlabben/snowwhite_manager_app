@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snowwhite_manager/api.dart';
@@ -10,18 +8,15 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  StreamController<DashboardInfo> _controller;
-
   @override
   void initState() {
-    _controller = StreamController.broadcast();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DashboardInfo>(
-      stream: _controller.stream,
+    return FutureBuilder<DashboardInfo>(
+      future: getInfo(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Container();
         DashboardInfo info = snapshot.data;
@@ -63,7 +58,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void dispose() {
-    _controller.close();
     super.dispose();
   }
 }

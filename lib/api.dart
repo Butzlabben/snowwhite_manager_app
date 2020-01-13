@@ -24,16 +24,17 @@ Future<bool> verify(String pin) async {
   return verifyWithUsername(token, pin);
 }
 
-Future<bool> verifyToken(String token) async {
+Future<VerifyResult> verifyToken(String token) async {
   Map body = {'token': token};
   http.Response response =
       await http.post(prefix + "verify_token.php", body: jsonEncode(body));
   if (response.statusCode == 400) {
     return Future.error("error");
   } else if (response.statusCode == 200) {
-    return true;
+    Map responseBody = jsonDecode(response.body);
+    return responseBody['manager'];
   }
-  return false;
+  return VerifyResult.not;
 }
 
 Future<Scan> checkTicket(String tid) async {
@@ -96,6 +97,22 @@ Future<List<Ticket>> listTickets({int limit: 20, int offset: 0}) async {
   return tickets;
 }
 
+Future<DashboardInfo> getInfo() async {
+  String token = await FlutterSecureStorage().read(key: 'token');
+  http.Response response = await http.get(prefix + "info.php?token=$token");
+  if (response.statusCode != 200) {
+    throw Exception("User not able to see content");
+  } else {
+    Map body = jsonDecode(response.body);
+    List sellers_list = body['sellers'];
+    Map sellers = {};
+    sellers_list.forEach((seller) {
+      sellers[seller['name']] = seller['ticket_count'];
+    });
+    return DashboardInfo(body['ticket_count'], body['tickets_used'], sellers);
+  }
+}
+
 class DashboardInfo {
   final int ticketsSold, ticketsUsed;
   final Map<String, int> ticketsSoldByPerson;
@@ -134,6 +151,8 @@ class Ticket {
 }
 
 enum ScanResult { allowed, already_used, not_found, error }
+
+enum VerifyResult { not, normal, manager }
 
 Map<ScanResult, Color> resultColors = {
   ScanResult.allowed: Color(0xFF2CD02C),
