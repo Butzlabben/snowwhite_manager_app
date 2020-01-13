@@ -105,6 +105,7 @@ class _InputWidgetState extends State<InputWidget> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       widget.scanCallback(scanData);
+      controller.dispose();
     });
   }
 
